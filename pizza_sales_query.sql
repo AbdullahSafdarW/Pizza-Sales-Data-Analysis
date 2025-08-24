@@ -3,7 +3,7 @@ USE ABD;
 
 -- Date format correction of importing mistake date needs to be in YYMMDD not anything else
 
-SET SQL_SAFE_UPDATES = 1;
+SET SQL_SAFE_UPDATES = 0;
 UPDATE pizza_sales
 SET order_date = STR_TO_DATE(order_date, '%d-%m-%Y');
 
@@ -26,49 +26,27 @@ SELECT  ROUND(SUM(total_price)/ COUNT(DISTINCT order_id),2) AS Average_Order FRO
 SELECT SUM(quantity) FROM pizza_sales; -- 49574
 
 -- Pizzas Sold of Sizes
-SELECT SUM(quantity) FROM pizza_sales WHERE pizza_size = 'S' -- 14403
-UNION
-SELECT SUM(quantity) FROM pizza_sales WHERE pizza_size = 'M' -- 15635
-UNION
-SELECT SUM(quantity) FROM pizza_sales WHERE pizza_size = 'L' -- 18956
-UNION
-SELECT SUM(quantity) FROM pizza_sales WHERE pizza_size = 'XL' -- 552
-UNION
-SELECT SUM(quantity) FROM pizza_sales WHERE pizza_size = 'XXL' -- 28
-UNION 
-SELECT SUM(quantity) FROM pizza_sales; -- 49574
+-- 14403
+-- 15635
+-- 18956
+-- 552
+-- 28
+
+SELECT pizza_size, SUM(quantity) FROM pizza_sales 
+GROUP BY pizza_size;
 
 -- Average Pizzas Per Order
 SELECT ROUND(SUM(quantity)/COUNT(DISTINCT order_id),1) FROM pizza_sales; -- 2.3
 
--- ----       More Advance Data Analytics Questions and SQL Queries       -------------
+-- -------      More Advance Data Analytics Questions and SQL Queries       -------------
 
-SELECT DISTINCT DAYNAME(order_date) FROM pizza_sales;
+SELECT DISTINCT DAYNAME(order_date) AS Day, COUNT(order_id) AS Total_orders FROM pizza_sales
+GROUP BY DAYNAME(order_date);
 
-SELECT 'Monday' AS day_of_week, COUNT(DISTINCT order_id) AS distinct_orders
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Monday'
-UNION
-SELECT 'Tuesday', COUNT(DISTINCT order_id)
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Tuesday'
-UNION
-SELECT 'Wednesday', COUNT(DISTINCT order_id)
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Wednesday'
-UNION 
-SELECT 'Thursday', COUNT(DISTINCT order_id)
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Thursday'
-UNION
-SELECT 'Friday', COUNT(DISTINCT order_id)
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Friday'
-UNION
-SELECT 'Saturday', COUNT(DISTINCT order_id)
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Saturday'
-UNION 
-SELECT 'Sunday', COUNT(DISTINCT order_id)
-FROM pizza_sales
-WHERE DAYNAME(order_date) = 'Sunday';
+-- Pizzas sold per flavour
+
+SELECT f.pizza_name, SUM(s.quantity) AS total_sold
+FROM pizza_flavours f
+LEFT JOIN pizza_sales s 
+ON f.pizza_name = s.pizza_name
+GROUP BY f.pizza_name;
