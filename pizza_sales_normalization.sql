@@ -25,7 +25,6 @@ CREATE TABLE pizza_flavours AS SELECT DISTINCT pizza_name FROM pizza_sales;
 -- Giving an PK flavour_id to the table and Rearranging Columns
 
 ALTER TABLE pizza_flavours
-ADD COLUMN flavour_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL 
-AFTER pizza_name;
+ADD COLUMN flavour_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
 
 SELECT * FROM pizza_flavours;
