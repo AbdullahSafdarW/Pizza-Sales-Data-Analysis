@@ -27,4 +27,15 @@ CREATE TABLE pizza_flavours AS SELECT DISTINCT pizza_name FROM pizza_sales;
 ALTER TABLE pizza_flavours
 ADD COLUMN flavour_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
 
+ALTER TABLE pizza_flavours
+ADD COLUMN total_sold INT DEFAULT 0;
+
+UPDATE pizza_flavours f
+LEFT JOIN (
+    SELECT pizza_name, SUM(quantity) AS total_sold
+    FROM pizza_sales
+    GROUP BY pizza_name
+) s ON f.pizza_name = s.pizza_name
+SET f.total_sold = COALESCE(s.total_sold, 0);
+
 SELECT * FROM pizza_flavours;
